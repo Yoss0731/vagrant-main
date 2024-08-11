@@ -1,0 +1,66 @@
+---
+- name: Configuración de Servidores
+  hosts: vagrant
+  become: yes
+
+  tasks:
+    - name: Actualizar el caché de APT
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600  # Duración del caché en segundos
+
+    - name: Instalar el servidor web Apache
+      apt:
+        name: apache2
+        state: latest
+        install_recommends: no  # Omite la instalación de paquetes recomendados
+
+    - name: Instalar el programa cowsay
+      apt:
+        name: cowsay
+        state: latest
+        install_recommends: no  # Omite los paquetes recomendados para ahorrar espacio
+
+    - name: Crear un archivo en el sistema remoto
+      file:
+        path: /home/vagrant/nuevo_archivo.txt
+        state: touch
+
+    - name: Escribir contenido en el archivo
+      copy:
+        content: "Contenido del archivo inicial"
+        dest: /home/vagrant/nuevo_archivo.txt
+
+    - name: Duplicar archivo en la máquina remota
+      copy:
+        src: /home/vagrant/nuevo_archivo.txt
+        dest: /home/vagrant/archivo_duplicado.txt
+        remote_src: yes  # El archivo fuente ya está en el sistema remoto
+
+    - name: Crear un directorio en la máquina remota
+      file:
+        path: /home/vagrant/nueva_carpeta
+        state: directory
+
+    - name: Habilitar e iniciar el servicio Apache
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Añadir un nuevo usuario
+      user:
+        name: usuario_nuevo
+        state: present
+        create_home: yes
+
+    - name: Crear un script en la máquina remota
+      copy:
+        content: |
+          #!/bin/bash
+          echo "Script de prueba ejecutándose"
+        dest: /home/vagrant/mi_script.sh
+        mode: '0755'
+
+    - name: Ejecutar el script creado
+      command: /home/vagrant/mi_script.sh

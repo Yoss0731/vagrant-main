@@ -1,0 +1,10 @@
+{
+    "virtualbox": {
+        "/vagrant": {
+            "guestpath": "/vagrant",
+            "hostpath": "C:/Users/elian/Downloads/practica_ansible",
+            "disabled": false,
+            "__vagrantfile": true
+        }
+    }
+}
